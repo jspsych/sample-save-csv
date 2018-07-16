@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="jspsych/jspsych.js"></script>
+        <script src="jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+        <link rel="stylesheet" type="text/css" href="jspsych/css/jspsych.css" />
+    </head>
+    <body>
+    </body>
+    <script>
+    var timeline = [];
+
+    timeline.push({
+        type: 'html-keyboard-response',
+        stimulus: '<p>This is a demo experiment to show how a CSV file is generated. Press any key to continue.</p>',
+        data: {sample: 'sample-data'}
+    });
+
+    for(var i=1; i<=5; i++){
+        timeline.push({
+            type: 'html-keyboard-response',
+            stimulus: '<p>Trial '+i+' of 5. Press any key to continue.'
+        });
+    }
+
+    timeline.push({
+        type: 'call-function',
+        func: function(){
+            var csv_data = jsPsych.data.get().csv();
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'php/save_data.php');
+            xhr.setRequestHeader('Content-Type', 'text/csv');
+            xhr.send(csv_data);
+        }
+    });
+
+    timeline.push({
+        type: 'html-keyboard-response',
+        stimulus: 'All done!'
+    });
+
+    jsPsych.init({
+        timeline: timeline
+    })
+
+    </script>
+</html>
